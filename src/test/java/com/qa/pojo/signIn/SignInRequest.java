@@ -1,4 +1,4 @@
-package com.qa.pojo.registration;
+package com.qa.pojo.signIn;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

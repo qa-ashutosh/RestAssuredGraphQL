@@ -24,7 +24,7 @@ public class GetCountryTest extends BaseTest {
 
     @Test(description = "Get Country By Id Test")
     public void getCountryById() {
-        String countryId = "43d4c8bb-ad03-40f6-b42d-cb6f7a81b3fd";
+        String countryId = "05fd58b8-3484-40a4-b6dc-006669a5161e";
 
         String payload = QueryPayload.getCountryById(countryId);
         Response res = RestResource.sendAPIRequest(payload);

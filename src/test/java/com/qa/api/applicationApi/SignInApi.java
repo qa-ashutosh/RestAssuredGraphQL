@@ -2,7 +2,7 @@ package com.qa.api.applicationApi;
 
 import com.qa.api.RestResource;
 import com.qa.pojo.playlist.Playlist;
-import com.qa.pojo.registration.SignInRequest;
+import com.qa.pojo.signIn.SignInRequest;
 import com.qa.utils.ConfigLoader;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;

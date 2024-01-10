@@ -26,8 +26,8 @@ public class SpecBuilder {
 
     public static ResponseSpecification getResponseSpec(){
         return new ResponseSpecBuilder()
-//                .expectStatusCode(200)
-//                .expectContentType(ContentType.JSON)
+                .expectStatusCode(200)
+                .expectContentType(ContentType.JSON)
                 .log(LogDetail.ALL)
                 .build();
     }

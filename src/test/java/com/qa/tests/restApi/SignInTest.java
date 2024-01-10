@@ -2,34 +2,41 @@ package com.qa.tests.restApi;
 
 import com.qa.api.StatusCode;
 import com.qa.api.applicationApi.SignInApi;
-import com.qa.api.applicationApi.PlaylistApi;
 import com.qa.pojo.playlist.Error;
-import com.qa.pojo.playlist.Playlist;
-import com.qa.pojo.registration.SignInRequest;
-import com.qa.pojo.registration.SignInResponse;
+import com.qa.pojo.signIn.SignInError;
+import com.qa.pojo.signIn.SignInRequest;
+import com.qa.pojo.signIn.SignInResponse;
 import com.qa.tests.BaseTest;
-import com.qa.utils.DataLoader;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
-import static com.qa.utils.FakerUtils.generateDescription;
-import static com.qa.utils.FakerUtils.generateName;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 
 public class SignInTest extends BaseTest {
 
-    @Story("Story- Register a user")
-    @Test
-    public void shouldBeAbleToLoginSuccessfully(){
+    @Story("Story- Sign in an user")
+    @Description("This test will check sign in with valid credentials")
+    @Test(description = "should be able to sign in with valid credentials")
+    public void shouldBeAbleToSignInSuccessfully(){
 //        LoginRequest loginRequest = loginRequestBuilder(generateName(), generateDescription(), false);
         SignInRequest signInRequest = signInRequestBuilder("ashutosh", "Test@1234", true);
         Response response = SignInApi.post(signInRequest);
         assertStatusCode(response.statusCode(), StatusCode.CODE_200);
-        assertLoginResponse(response.as(SignInResponse.class));
+        assertSignInResponse(response.as(SignInResponse.class));
+    }
+
+    @Story("Story- Sign in an user")
+    @Description("This test will check sign in with invalid credentials")
+    @Test(description = "should not be able to sign in with invalid credentials")
+    public void shouldNotBeAbleToSignInWithInvalidCredentials(){
+//        LoginRequest loginRequest = loginRequestBuilder(generateName(), generateDescription(), false);
+        SignInRequest signInRequest = signInRequestBuilder("invalidUsername", "InvalidPassword", true);
+        Response response = SignInApi.post(signInRequest);
+        assertStatusCode(response.statusCode(), StatusCode.CODE_200);
+        assertSignInResponseForInvalidCredentials(response.as(SignInResponse.class));
     }
 
     @Story("Story- Get a playlist")
@@ -82,14 +89,29 @@ public class SignInTest extends BaseTest {
     }
 
     @Step
-    public void assertLoginResponse(SignInResponse signInResponse){
-            assertThat(signInResponse.getMessage(), equalTo("Success"));
+    public void assertSignInResponse(SignInResponse signInResponse){
+        assertThat(signInResponse.getMessage(), equalTo("Success"));
         assertThat(signInResponse.getApiResponseStatus(), equalTo("OK"));
         assertThat(signInResponse.getHttpStatus(), equalTo(200));
         assertThat(signInResponse.getData().getAccessToken(), notNullValue());
         assertThat(signInResponse.getData().getRefreshToken(), notNullValue());
         assertThat(signInResponse.getData().getExpiresIn(), equalTo(3600));
     }
+
+    @Step
+    public void assertSignInResponseForInvalidCredentials(SignInResponse signInResponse){
+        assertThat(signInResponse.getMessage(), equalTo("Error"));
+        assertThat(signInResponse.getApiResponseStatus(), equalTo("Failed"));
+        assertThat(signInResponse.getHttpStatus(), equalTo(200));
+        assertThat(signInResponse.getData(), nullValue());
+//        assertThat(SignInError.getErrors().getErrorCode(), equalTo(106));
+//        assertThat(signInResponse.getErrors().getDevMessage(), equalTo("Incorrect username or password."));
+    }
+
+//    public void assertSignInError(SignInError responseErr, StatusCode statusCode){
+//        assertThat(responseErr.getError().getStatus(), equalTo(statusCode.code));
+//        assertThat(responseErr.getError().getMessage(), equalTo(statusCode.msg));
+//    }
 
     @Step
     public void assertStatusCode(int actualStatusCode, StatusCode statusCode){

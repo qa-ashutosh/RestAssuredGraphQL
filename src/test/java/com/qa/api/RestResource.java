@@ -65,19 +65,19 @@ public class RestResource {
 
     public static Response postUserAccount(String payload){
         return given(getUserAccountRequestSpec())
-                .filter((req, res, ctx) -> {
-                    if(req.getBody() != null) {
-                        String body = req.getBody().toString();
-                        System.out.println("Req-Body: " + body);
-//                        body = body.replaceAll("\"password\": \"[^\"]*\"", "\"password\": \"*****\"");
-//                        body = body.replaceAll("\"password\": \"Test@1234\"", "\"password\": \"*****\"");
-                        System.out.println("After conversion Req-Body: " + body);
-                        req.body(body);
-                    }
-                    return ctx.next(req, res);
-                })
+//                .filter((req, res, ctx) -> {
+//                    if(req.getBody() != null) {
+//                        String body = req.getBody().toString();
+//                        System.out.println("Req-Body: " + body);
+////                        body = body.replaceAll("\"password\": \"[^\"]*\"", "\"password\": \"*****\"");
+////                        body = body.replaceAll("\"password\": \"Test@1234\"", "\"password\": \"*****\"");
+//                        System.out.println("After conversion Req-Body: " + body);
+//                        req.body(body);
+//                    }
+//                    return ctx.next(req, res);
+//                })
                 .body(payload)
-                .when().post(SIGN_IN)
+                .when().post(ACCOUNT_BASE_PATH + SIGN_IN)
                 .then().spec(getResponseSpec())
                 .extract()
                 .response();
@@ -87,7 +87,6 @@ public class RestResource {
         EncoderConfig encoderConfig = new EncoderConfig();
 
         Response response = given()
-                .relaxedHTTPSValidation()
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + getGraphQLToken())
                 .config(RestAssured.config()
